@@ -20,7 +20,6 @@ def vowel_index(char):
 
 
 def create_pattern(needle):
-    # p = {'a': [], 'e': [], 'i': [], 'o': [], 'u': [], 'y': []}
     p = [[], [], [], [], [], []]
 
     for i in range(0, len(needle)):
@@ -43,24 +42,17 @@ def find_pivot_vowel(p):
     return pivot_index
 
 
-def find_position(pattern, pivot_vowel, text):
+def find_position(pattern, pivot_vowel, text, needle):
     length = len(text)
-    # print(pattern)
-    # print(pivot_vowel)
-    # print(text)
     pivot_distance = pattern[pivot_vowel][0]
     i = 0
     while i < length:
         if i is -1:
             break
-        # print(i)
-        # print("testing", text[i])
-        # print("against", vowels[pivot_vowel])
         if text[i] is vowels[pivot_vowel]:
             j = 0
-            # print("testing pivot vowel")
             while j < len(pattern[pivot_vowel]):
-                rel_dist = i-pivot_distance+pattern[pivot_vowel][j]
+                rel_dist = i - pivot_distance + pattern[pivot_vowel][j]
                 if rel_dist >= length:
                     i = -1
                     break
@@ -76,25 +68,16 @@ def find_position(pattern, pivot_vowel, text):
                 continue
 
             j = 0
-            # print("testing other vowels")
             while j < 6:
-                # print("j", j)
                 if j is pivot_vowel:
                     j += 1
                     continue
 
                 k = 0
-                # print("len", len(pattern[j]))
-                # print("pattern", pattern)
                 while k < len(pattern[j]):
-                    # print("k", k)
-                    rel_dist = i-pivot_distance+pattern[j][k]
-                    # print("relative", rel_dist)
-                    # print("testing", text[rel_dist])
-                    # print("against", vowels[j])
+                    rel_dist = i - pivot_distance + pattern[j][k]
                     if text[rel_dist] is not vowels[j]:
                         k = -1
-                        # i += pivot_distance
                         break
 
                     k += 1
@@ -104,20 +87,41 @@ def find_position(pattern, pivot_vowel, text):
                     break
                 j += 1
 
+            k = 0
             if j is not -1:
-                return i-pivot_distance
+                while k < len(needle):
+                    if text[i-pivot_distance+k] is not needle[k]:
+                        k = -1
+                        break
+
+                    k += 1
+
+                if k is not -1:
+                    return i-pivot_distance
 
         i += 1
 
     return -1
 
 
-needle1 = 'university'
-needle2 = 'Jesus'
-text = "lorem ipsum dolor amet iver unsity univer university"
+needle1 = 'God'
+needle2 = 'Let there be light'
+needle3 = 'And Jesus came and spake unto them'
+needle4 = 'Go ye therefore, and teach all nations, baptizing them in the'
 bible = read_text('bible.txt')
-pattern = create_pattern(needle2)
-# print(pattern)
+
+pattern = create_pattern(needle1)
 pivot_vowel = find_pivot_vowel(pattern)
-# print(vowels[pivot_vowel])
-print(find_position(pattern, pivot_vowel, bible))
+print(find_position(pattern, pivot_vowel, bible, needle1))
+
+pattern = create_pattern(needle2)
+pivot_vowel = find_pivot_vowel(pattern)
+print(find_position(pattern, pivot_vowel, bible, needle2))
+
+pattern = create_pattern(needle3)
+pivot_vowel = find_pivot_vowel(pattern)
+print(find_position(pattern, pivot_vowel, bible, needle3))
+
+pattern = create_pattern(needle4)
+pivot_vowel = find_pivot_vowel(pattern)
+print(find_position(pattern, pivot_vowel, bible, needle4))
